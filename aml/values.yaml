@@ -1,0 +1,145 @@
+config:
+
+# Default values for launchpad.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: dockerhub.gemalto.com/sas/aml
+  tag: 2.11.0-294
+  pullPolicy: IfNotPresent
+  pullSecrets:
+  - name: docker-creds 
+restartPolicy: Always
+
+service:
+  type: NodePort
+  port: 80
+
+configmap:
+  enabled: true
+  config: |-
+    "{\r\n  \"version\": \"1.0.0\",\r\n  \"SasIdpUrl\": \"http://10.124.99.142:8080/\",\r\n
+    \ \"SasIdpUserName\": \"admin\",\r\n  \"SasIdpPassword\": \"admin\",\r\n  \"SasIdpClientId\":
+    \"admin-cli\",\r\n  \"SasIdpGrantType\": \"password\",\r\n  \"mongoUrl\": \"mongodb://admin:admin@10.124.99.142:32780/AMLDB?authSource=admin\",\r\n
+    \ \"messagingProvider\": \"RabbitMQ\",\r\n  \"messageEncryptionPassword\": \"chooseme\",\r\n
+    \ \"rabbitMqAmqpUri\": \"amqp://guest:guest@10.124.99.142:5672\",\r\n  \"AWS_ACCESS_KEY_ID\":
+    \"\",\r\n  \"AWS_SECRET_ACCESS_KEY\": \"\",\r\n  \"AWS_REGION\": \"\",\r\n  \"httpsCertFile\":
+    \"/target/SslConfig/cert.pfx\",\r\n  \"httpsCertFilePwd\": \"1234\",\r\n  \"pempublickey\":
+    \"-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo0cmDIacyJJiYWgvPC4nwiazIq9HpditqDJ6x8prYsXbQ3rUiXKhuyQ0DrJzuJDGZH8LWACs3hIYezieRcPE82wbelNOFnx42lezBodiJXlkZoHp5erAURqG9gfFH8bbdhD2P6vxa5n4KUh5yZTzLhisqOisTeRMoghEZ71bV2MVUaQ+Kv2ck5G3xPcWTD5rG1xdZLymaTV96qA18fnex35+dBLZ5OYKHcwalsYxqGw+KfaYDvHMOKAX77ml2u9EsxSgJwy/YM4Ve1TbQyJepsdvefXEU7TX9NoWM+mjiyV/yhn2k/Z620Cklu3CBlOvPRLIwMlZiyVFxMKXVQgJXwIDAQAB-----END
+    PUBLIC KEY-----\",\r\n  \"passphrase\": \"IAmGood\"\r\n}"
+  log4net: |-
+    "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n<log4net>\r\n  <appender
+    name=\"RollingFile\" type=\"log4net.Appender.FileAppender\">\r\n    <file value=\"Logs1\\.log\"
+    />\r\n    <layout type=\"log4net.Layout.PatternLayout\">\r\n      <conversionPattern
+    value=\"{&quot;type&quot; : &quot;%-5p&quot;, &quot;date&quot; = &quot;%d{yyyy-MM-dd:hh:mm:ss}&quot;,
+    &quot;Message&quot; =  &quot;%message&quot;}%newline\"  />\r\n    </layout>\r\n
+    \ </appender>\r\n  <appender name=\"stdout\" type=\"log4net.Appender.ConsoleAppender\">\r\n
+    \   <layout type=\"log4net.Layout.PatternLayout\">\r\n      <conversionPattern
+    value=\"{&quot;type&quot; : &quot;%-5p&quot;, &quot;date&quot; = &quot;%d{yyyy-MM-dd:hh:mm:ss}&quot;,
+    &quot;Message&quot; =  &quot;%message&quot;}%newline\"  />\r\n    </layout>\r\n
+    \ </appender>\r\n    <root>\r\n    <level value=\"ALL\" />\r\n    <appender-ref
+    ref=\"stdout\" />\r\n  </root>\r\n</log4net>"
+
+aml:
+  name: aml-chart
+  #hostAliases:
+  #- ip: "10.164.44.59"
+  #   hostnames:
+  #   - "scs-internal.sta.test.gemalto.com"
+  #   - "scs.sta.test.gemalto.com"
+  #   - "re-cci.sta.test.gemalto.com"
+
+  #volumes:
+  #- name: aml-config
+  #  configMap:
+  #    name: aml-config
+  #    defaultMode: 420
+  #- name: aml-secret
+  #  secret:
+  #    secretName: aml-secret
+  #    defaultMode: 420
+
+  #volumeMounts:
+  #- name: aml-config
+  #  mountPath: /target/Config
+  #- name: aml-secret
+  #  mountPath: /target/SslConfig
+
+  environment: production
+
+  #amlconfig: /target/Config
+  #amlsecret: /target/SslConfig
+
+
+  #env:
+  #  - name: NODE_ENV
+  #    value: production
+      
+  #ports:
+  #- name: 80-tcp
+  #  port: 80
+  #  targetPort: 3000
+  #- name: 443-tcp
+  #  port: 443
+  #  targetPort: 3443
+  #containerports:
+  #- name: aml-https
+  #  containerPort: 8443
+  #  protocol: TCP
+  #- name: aml-http
+  #   containerPort: 8080
+  #   protocol: TCP
+
+  #livenessProbe:
+  #  failureThreshold: 3
+  #  httpGet:
+  #    path: /api/alive
+  #    port: 8443
+  #    scheme: HTTPS
+  #  initialDelaySeconds: 10
+  #  periodSeconds: 10
+  #  successThreshold: 1
+  #  timeoutSeconds: 5
+
+  #readinessProbe:
+  #  failureThreshold: 3
+  #  httpGet:
+  #    path: /api/alive
+  #    port: 8443
+  #    scheme: HTTPS
+  #  initialDelaySeconds: 10
+  #  periodSeconds: 10
+  #  successThreshold: 1
+  #  timeoutSeconds: 5
+
+type: Opaque
+
+deployment:
+  enabled: true
+  replicas: 1
+  httpnodeport: 30000
+  httpsnodeport: 30443
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nameOverride: ""
+fullnameOverride: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+

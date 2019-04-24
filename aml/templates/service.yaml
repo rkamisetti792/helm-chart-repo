@@ -1,0 +1,37 @@
+{{ if .Values.deployment.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+    name: {{ template "aml.fullname" . }}
+    labels:
+      app: "{{ template "aml.fullname" . }}"
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+      release: {{ .Release.Name | quote }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ template "aml.fullname" . }}
+    type: deployment
+  {{- if .Values.aml.ports }}
+  ports:
+  {{toYaml .Values.aml.ports | indent 2 }}
+  {{- else }}
+  ports:
+    - name: aml-http
+      port: 80
+      targetPort: 8080
+  {{- if .Values.deployment.httpnodeport }}
+      nodePort: {{ .Values.deployment.httpnodeport }}
+  {{- else }}
+      nodePort: 30000
+  {{- end }}      
+    - name: aml-https
+      port: 443
+      targetPort: 8443
+  {{- if .Values.deployment.httpsnodeport }}
+      nodePort: {{ .Values.deployment.httpsnodeport }}
+  {{- else }}
+      nodePort: 30443
+  {{- end }}
+  {{- end }}
+{{- end }}
