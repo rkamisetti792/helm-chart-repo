@@ -3,7 +3,7 @@ entries:
   aml:
   - apiVersion: v1
     appVersion: 2.4.0-230
-    created: 2019-04-24T09:43:12.350087947+05:45
+    created: 2019-04-24T09:57:50.0474458+05:45
     description: A Helm chart for AML
     digest: 15161b330c97188e9897c372989bd9f5876de4baa951b287f822ab36b4ef10c7
     maintainers:
@@ -17,4 +17,4 @@ entries:
     urls:
     - aml-1.3.0.0.tgz
     version: 1.3.0.0
-generated: 2019-04-24T09:43:12.349240251+05:45
+generated: 2019-04-24T09:57:50.046588377+05:45
